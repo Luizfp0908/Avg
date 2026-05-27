@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>AVV Performance - Sistema Completo MVP</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #d1d1d1; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+      
+        #app-window {
+            width: 1000px;
+            height: 700px;
+            background-color: #2d1b69;
+            border: 2px solid #555;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TELA DE LOGIN */
+        #login-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; width: 100%; position: absolute; z-index: 10; background-color: #2d1b69;
+        }
+        .login-card { background-color: #1e1145; padding: 50px; text-align: center; border-radius: 8px; }
+        .login-card h1 { color: white; margin-bottom: 25px; }
+        .login-card input { width: 280px; height: 40px; margin-bottom: 10px; padding: 5px; }
+        .btn-entrar { width: 280px; height: 42px; background-color: #7c3aed; color: white; border: none; font-weight: bold; cursor: pointer; }
+
+        /* TELA PRINCIPAL (APÓS LOGIN) */
+        #main-app { display: none; flex-direction: column; height: 100%; background-color: #f0f0f0; }
+        
+        /* Estilo TabPane JavaFX */
+        .tab-bar { display: flex; background-color: #e1e1e1; border-bottom: 1px solid #999; }
+        .tab { padding: 10px 20px; border-right: 1px solid #999; cursor: pointer; background-color: #d8d8d8; font-size: 13px; }
+        .tab.active { background-color: #f0f0f0; border-bottom: 2px solid #7c3aed; font-weight: bold; }
+        .tab-content { padding: 25px; flex: 1; display: none; overflow-y: auto; }
+        .tab-content.active { display: block; }
+
+        /* Componentes de Conteúdo */
+        h2 { color: #333; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .toolbar { margin-bottom: 15px; display: flex; gap: 10px; }
+        .btn-fx { padding: 5px 15px; background-color: #eee; border: 1px solid #999; cursor: pointer; }
+        .btn-fx:hover { background-color: #ddd; }
+
+        /* Tabelas (TableView JavaFX) */
+        table { width: 100%; border-collapse: collapse; background-color: white; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 14px; }
+        th { background-color: #e9e9e9; font-weight: 600; }
+        .status-pago { color: green; font-weight: bold; }
+        .status-pendente { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="app-window">
+    <div id="login-screen">
+        <div class="login-card">
+            <span style="font-size: 50px;">🏐</span>
+            <h1>AVV Performance</h1>
+            <input type="text" id="user" placeholder="Usuário (avv)">
+            <input type="password" id="pass" placeholder="Senha (avv123)">
+            <button class="btn-entrar" onclick="login()">ENTRAR</button>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <div class="tab-bar">
+            <div class="tab active" onclick="verAba('atletas', this)">Atletas</div>
+            <div class="tab" onclick="verAba('treinos', this)">Treinos</div>
+            <div class="tab" onclick="verAba('stats', this)">Estatísticas</div>
+            <div class="tab" onclick="verAba('relatorios', this)">Relatórios</div>
+            <div class="tab" style="margin-left:auto; background-color: #ffcccc;" onclick="logout()">Sair</div>
+        </div>
+
+        <div id="atletas" class="tab-content active">
+            <h2>Gestão de Atletas</h2>
+            <div class="toolbar">
+                <button class="btn-fx">Novo Atleta</button>
+                <button class="btn-fx">Editar</button>
+                <button class="btn-fx">Excluir</button>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Nome</th><th>Posição</th><th>Nascimento</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>João Silva</td><td>Ponteiro</td><td>15/05/2005</td></tr>
+                    <tr><td>2</td><td>Lucas Oliveira</td><td>Levantador</td><td>22/08/2004</td></tr>
+                    <tr><td>3</td><td>Pedro Santos</td><td>Líbero</td><td>10/02/2006</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="treinos" class="tab-content">
+            <h2>Histórico de Treinos</h2>
+            <div class="toolbar"><button class="btn-fx">Registrar Treino</button></div>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Data</th><th>Duração</th><th>Categoria</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>20/05/2026</td><td>120 min</td><td>Sub-19</td></tr>
+                    <tr><td>2</td><td>22/05/2026</td><td>90 min</td><td>Sub-17</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="stats" class="tab-content">
+            <h2>Desempenho Técnico</h2>
+            <p>Estatísticas por fundamento coletadas nos treinos:</p><br>
+            <table>
+                <thead>
+                    <tr><th>Atleta</th><th>Fundamento</th><th>Aproveitamento</th><th>Erros</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>João Silva</td><td>Saque</td><td>82%</td><td>2</td></tr>
+                    <tr><td>Lucas Oliveira</td><td>Levantamento</td><td>95%</td><td>1</td></tr>
+                    <tr><td>Pedro Santos</td><td>Recepção</td><td>88%</td><td>3</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="relatorios" class="tab-content">
+            <h2>Relatórios Gerenciais</h2>
+            <div style="background: white; padding: 20px; border: 1px solid #ccc;">
+                <p><b>Total de Atletas Ativos:</b> 3</p>
+                <p><b>Média de Frequência nos Treinos:</b> 92%</p>
+                <p><b>Arrecadação Mensal Estimada:</b> R$ 450,00</p>
+                <hr style="margin: 15px 0;">
+                <button class="btn-fx">Gerar PDF de Performance</button>
+                <button class="btn-fx">Exportar Dados para CSV</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function login() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if(u === 'avv' && p === 'avv123') {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+        } else {
+            alert('Credenciais Inválidas! Use avv / avv123');
+        }
+    }
+
+    function logout() {
+        location.reload();
+    }
+
+    function verAba(idAba, abaBotao) {
+        // Esconde todos os conteúdos
+        const conteudos = document.getElementsByClassName('tab-content');
+        for (let c of conteudos) { c.classList.remove('active'); }
+        
+        // Remove 'active' de todos os botões da aba
+        const abas = document.getElementsByClassName('tab');
+        for (let a of abas) { a.classList.remove('active'); }
+        
+        // Mostra o selecionado
+        document.getElementById(idAba).classList.add('active');
+        abaBotao.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
